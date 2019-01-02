@@ -15,12 +15,6 @@ class Imagemagick < Formula
     sha256 "fc2681e21a012516713f4b0bfd502aa2519642890e858b87f6482a67b687779f" => :sierra
   end
 
-  # Using LLVM with superenv would make the resulting binaries depend
-  # on /usr/local/opt/llvm/lib/libomp.dylib instead of the intended
-  # /usr/local/opt/libomp/lib/libomp.dylib, as superenv would add the
-  # LDFLAGS `-L/usr/local/opt/llvm/lib`.
-  env :std
-
   option "with-fftw", "Compile with FFTW support"
   option "with-hdri", "Compile with HDRI support"
   option "with-libheif", "Compile with HEIF support"
@@ -92,8 +86,6 @@ class Imagemagick < Formula
     # libomp from LLVM).
     ENV["CC"] = "/usr/local/opt/llvm/bin/clang"
     ENV["CXX"] = "/usr/local/opt/llvm/bin/clang++"
-    ENV["CPPFLAGS"] = ENV["CPPFLAGS"].split(" ").reject { |item| item =~ /llvm/ }.join(" ")
-    ENV["LDFLAGS"] = ENV["LDFLAGS"].split(" ").reject { |item| item =~ /llvm/ }.join(" ")
 
     system "./configure", *args
     system "make", "install"
